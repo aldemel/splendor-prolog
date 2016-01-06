@@ -150,8 +150,6 @@ comparePrestige(>, Card1, Card2):-
 	.
 comparePrestige(<, _, _).
 
-%checkForSameInARow(POrderedCards, Bonuses, SamePOrdered):-
-
 
 
 % Bonuses missing to get a noble

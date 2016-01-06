@@ -15,17 +15,17 @@ decideAction(Player, Oponents, StateProxy, Action) :-
 	call(StateProxy, Player, gems, Gems),
 	%show(1, '~n MyGems: ~w ~n',[Gems]),
 	call(StateProxy, Player, bonuses, Bonuses),
-	show(0, '~n MyBonus: ~w ~n',[Bonuses]),
+	%show(0, '~n MyBonus: ~w ~n',[Bonuses]),
 	call(StateProxy, Player, reserves, Reserves),
 	%show(1, '~n MyReserved: ~w ~n',[Reserves]),
 	call(StateProxy, game, cards, [C|Cards]),
-	card(C, Info),
-	show(0,  '~n Card: ~w ~n', Info),
+	%card(C, Info),
+	%show(0,  '~n Card: ~w ~n', Info),
 	%show(1, '~n OpenCards: ~w ~n',[Cards]),
 	call(StateProxy, game, nobles, AvNobles),
 	%show(1, '~n Nobles: ~w ~n',[AvNobles]),
 	call(StateProxy, game, tokens, Tokens),
-	show(0, '~n Tokens: ~w ~n',[Tokens]),
+	%show(0, '~n Tokens: ~w ~n',[Tokens]),
 	%show(1, '~n Oponents: ~w ~n', [Oponents]),
 	(
 		% if buying possible, do it!
@@ -50,7 +50,7 @@ decideAction(Player, Oponents, StateProxy, Action) :-
 		CardsLength1 is CardsLength+1,
 		random(1, CardsLength1, ReserveId),
 		nth1(ReserveId, [C|Cards], ReservedCard),
-		Action = reserveCard(ReservedCard)
+		Action = reserveCard(ReservedCard,[0,0,0,0,0,0])
 		;
 		% get gems
 		call(StateProxy, game, tokens, Tokens),

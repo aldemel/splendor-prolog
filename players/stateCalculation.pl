@@ -12,9 +12,9 @@ calcState(Player, _, StateProxy, Action):-
 	call(StateProxy, Player, score, Score),
 	%show(0, '~n MyScore ~w ~n', Score),
 	call(StateProxy, Player, gems, MyGems),
-	%show(0, 'MyGems ~w ~n', [MyGems]),
+	show(0, 'MyGems ~w ~n', [MyGems]),
 	call(StateProxy, Player, bonuses, MyBonuses),
-	%show(0, 'MyBonuses ~w ~n', [MyBonuses]),
+	show(0, 'MyBonuses ~w ~n', [MyBonuses]),
 	call(StateProxy, Player, reserves, Reserves),
 	%show(0, 'Reserves ~w ~n', [Reserves]),
 	call(StateProxy, game, cards, Cards),
@@ -22,12 +22,16 @@ calcState(Player, _, StateProxy, Action):-
 	call(StateProxy, game, nobles, AvNobles),
 	%show(0, 'AvNobles ~w ~n', [AvNobles]),
 	call(StateProxy, game, tokens, Tokens),
-	show(1, 'Tokens ~w ~n', [Tokens]),
+	show(0, 'Tokens ~w ~n', [Tokens]),
 	append(Reserves, Cards, AllCards),
 	canBuyCards(MyGems, MyBonuses, AllCards, CanBuyCards),
 	length(CanBuyCards,HowMany),
-	show(1, 'HowMany CanBuyCards ~w ~n', HowMany),
-	
+	show(0, '~n HowMany CanBuyCards ~w ~n', HowMany),
+	length(Reserves, NumReserves),
+	show(0, 'NumReserves ~w ~n', NumReserves),
+
+	%calcCardValues([AllCards]),
+
 	calcAndStoreBuyStates(MyGems, MyBonuses, Score, AvNobles, AllCards, CanBuyCards),
 
 	possibleTakeGems(Tokens, MyGems, MyBonuses, Score, AvNobles, AllCards),
@@ -47,7 +51,8 @@ calcState(Player, _, StateProxy, Action):-
 		% sort by stateValue
 		% if not empty choose, if empty random
 	),
-	retractall(stateValue(_,_,_)).
+	retractall(stateValue(_,_,_)),
+	retractall(cardValue(_,_)).
 
 
 
@@ -60,7 +65,12 @@ filterLoosingMoves:-
 sortByStateValue(Sorted):-
 	findall(Action, stateValue(Action, _, neutral), Actions),
 	% sort descending
-	predsort(compareMove, Actions, Sorted).
+	predsort(compareMove, Actions, Sorted),
+	show(0, 'sorted: ~n', []),
+	showList(0, Sorted).
+
+showList(_, []).
+showList(Verbose, [H|Tail]):- show(Verbose, '~w ~n', H), showList(Verbose, Tail).
 
 compareMove(Pred, Action1, Action2):-
 	% only use this method if none of the moves can win
@@ -261,16 +271,16 @@ possibleReserve([_,_,_,_,_,Gold], MyPP, MyBonuses, MyGems, AvNobles, OpenCards, 
 			NewGems = MyGems
 		),
 		append(Reserves, OpenCards, AllCards),
-		calcStateValue(MyPP, MyBonuses, NewGems, AvNobles, AllCards, _, WinLoose),
-		%calcStateValue(MyPP, MyBonuses, NewGems, AvNobles, AllCards, STATEVALUE, WinLoose),
+		%calcStateValue(MyPP, MyBonuses, NewGems, AvNobles, AllCards, _, WinLoose),
+		calcStateValue(MyPP, MyBonuses, NewGems, AvNobles, AllCards, STATEVALUE, WinLoose),
 		% TODO: STORE STATE VALUE!
 		length(OpenCards, CardsLength),
 		CardsLength1 is CardsLength+1,
 		random(1, CardsLength1, ReserveId),
 		nth1(ReserveId, OpenCards, ReservedCard),
-		Action = reserveCard(ReservedCard),
+		Action = reserveCard(ReservedCard, [0,0,0,0,0,0]),
 		% TODO: USE REAL STATEVALUE
-		assert(stateValue(Action, 1, WinLoose))
+		assert(stateValue(Action, STATEVALUE, WinLoose))
 		;
 		true
 	).

@@ -57,7 +57,7 @@ calcBonusvalue(Bonuses, AvNobles, BONUSVALUE):-
 	calcNobleValue(Bonuses, AvNobles, NobleValue),
 	calcBonusBalance(Bonuses, BonusBalance),
 	% TODO: insert parameters!
-	BONUSVALUE is NobleValue + BonusBalance.
+	BONUSVALUE is (2 * NobleValue) + BonusBalance.
 
 
 %--NobleValue = PAR1*numberOfNobles (- PAR4*opponentIsCloserToNoble)
@@ -75,10 +75,10 @@ calcNobleValue(Bonuses, AvNobles, NobleValue):-
 	)
 	.
 
-calcBonusBalance(Bonuses, BonusBalance):-
+calcBonusBalance([W, B, G, R, S, _], BonusBalance):-
 	% FEHLER! in den bonusen ist gold mit drin, sprich das ist immer 0! abschneiden!
-	max_member(Max, Bonuses),
-	min_member(Min, Bonuses),
+	max_member(Max, [W, B, G, R, S]),
+	min_member(Min, [W, B, G, R, S]),
 	(
 		% if There is less than 4 of all bonuses, balance doesnt matter
 		% chose arbitrary value here...
