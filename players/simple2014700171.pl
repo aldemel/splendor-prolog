@@ -1,4 +1,4 @@
-:- module(s2014700171, []).
+:- module(simple2014700171, []).
 
 :- dynamic bonuses/1.
 :- dynamic reserves/1.
