@@ -1,5 +1,31 @@
 # splendor-prolog
 Ersin Basaran's Implementation of Splendor.
+
+# Updates
+###### 31/12/2015: doTournament/1 and doTournament/2 predicates are added
+The frame now includes a new predicate to perform complete tournaments. In order to run the tournament use one of the followings:
+
+    doTournament(50).
+    doTournament([Player1, Player2, ..., PlayerN], 50).
+
+The first one, gets all the players in players folder, runs the tournament and prints the result. If you want to have a tournament with a subset of players, use second one by providing the list of players. In this example, each player plays 100 games with each other players. 
+
+###### 30/12/2015: runGameBatch predicate is added
+
+The frame now includes a new predicate 
+
+    runGameBatch([P1, P2], Count, P1WinCount, P2WinCount)
+
+Example usage:
+
+    runGameBatch([randomPlayer, randomPlayer], 50, P1WinCount, P2WinCount).
+
+which returns player win counts as P1WinCount and P2WinCount after simulating 100 games (50 with P1 vs P2, 50 with P2 vs P1).
+
+If any draw happens (unlikely but possible), it counts both players as winners. Therefore 
+
+    P1WinCount + P2WinCount = 100 + drawCount
+
 # Getting Started 
 
 In order to run the game the splendor.pl file must be consulted first.
@@ -74,13 +100,24 @@ The framework supplies the information about the game state and player states us
 	get reserved cards:
 		call(StateProxy, Player, reserves, Reserves),
 
+	get acquired nobles:
+		call(StateProxy, Player, nobles, Nobles),
+
+	get score:
+		call(StateProxy, Player, score, Score),
+
 	get all opened cards
 		call(StateProxy, game, cards, Cards),
+
+	get close cards (**new**) (`Cards` is a list `[D1,D2,D3]` which includes the close cards in each deck and they are shuffled at each call)
+		call(StateProxy, game, closeCards, Cards),
+
+	get available nobles 
+		call(StateProxy, game, nobles, Nobles),
 
 	get one openent's score
 		call(StateProxy, Oponent, score, OponentScore)
 
-	...
 
 StateProxy allows framework to hide the corresponding dynamic predicate from the players to prevent hacks. 
 
